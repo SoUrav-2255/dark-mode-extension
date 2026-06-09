@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dark Mode Toggle</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #111111;
+      --surface: #1c1c1c;
+      --surface2: #252525;
+      --border: #2e2e2e;
+      --text: #f0f0f0;
+      --muted: #888;
+      --accent: #4f9cff;
+      --accent-glow: rgba(79, 156, 255, 0.25);
+      --on: #22c55e;
+      --off: #3a3a3a;
+      --thumb: #ffffff;
+      --radius: 10px;
+    }
+
+    body {
+      width: 310px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      user-select: none;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #1a2a4a 0%, #0d1b35 100%);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      box-shadow: 0 0 12px var(--accent-glow);
+      flex-shrink: 0;
+    }
+
+    .title-block { flex: 1; }
+    .title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.2; }
+    .subtitle { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* ── Main Toggle Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 12px;
+      overflow: hidden;
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+    }
+
+    .card-row + .card-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .row-label { display: flex; flex-direction: column; gap: 2px; }
+    .row-title { font-size: 13px; font-weight: 500; }
+    .row-sub { font-size: 11px; color: var(--muted); }
+
+    /* Toggle Switch */
+    .toggle {
+      position: relative;
+      width: 42px; height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--off);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.22s ease;
+    }
+
+    .toggle input:checked + .toggle-track {
+      background: var(--on);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 18px; height: 18px;
+      background: var(--thumb);
+      border-radius: 50%;
+      transition: transform 0.22s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .toggle input:checked + .toggle-track::after {
+      transform: translateX(18px);
+    }
+
+    /* ── Sliders ── */
+    .sliders-section {
+      padding: 4px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-label {
+      font-size: 11px;
+      color: var(--muted);
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    .slider-value {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      width: 34px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--accent-glow);
+      transition: transform 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* ── Current Site Badge ── */
+    .site-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      max-width: 160px;
+      overflow: hidden;
+    }
+
+    .site-badge span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 8px 14px 14px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 8px 0;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn.primary:hover {
+      background: #6aaeff;
+    }
+
+    /* ── Status dot ── */
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--off);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .dot.active { background: var(--on); box-shadow: 0 0 5px rgba(34,197,94,0.5); }
+
+    /* Disabled sliders */
+    .sliders-section.dim { opacity: 0.35; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">🌙</div>
+    <div class="title-block">
+      <div class="title">Dark Mode Toggle</div>
+      <div class="subtitle">Control dark mode per site or globally</div>
+    </div>
+  </div>
+
+  <!-- Global Toggle Card -->
+  <div class="card">
+    <!-- Global switch -->
+    <div class="card-row">
+      <div class="row-label">
+        <div class="row-title">Global Dark Mode</div>
+        <div class="row-sub">Apply to all websites</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="globalToggle" />
+        <div class="toggle-track"></div>
+      </label>
+    </div>
+
+    <!-- This site switch -->
+    <div class="card-row">
+      <div class="row-label">
+        <div class="row-title">This Site</div>
+        <div class="site-badge">
+          <div class="dot" id="siteDot"></div>
+          <span id="siteHostname">—</span>
+        </div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="siteToggle" />
+        <div class="toggle-track"></div>
+      </label>
+    </div>
+
+    <!-- Sliders -->
+    <div class="sliders-section" id="slidersSection">
+      <div class="slider-row">
+        <div class="slider-label">☀️ Brightness</div>
+        <input type="range" id="brightnessSlider" min="50" max="150" value="100" />
+        <div class="slider-value" id="brightnessVal">100%</div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-label">◑ Contrast</div>
+        <input type="range" id="contrastSlider" min="50" max="150" value="100" />
+        <div class="slider-value" id="contrastVal">100%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer actions -->
+  <div class="footer">
+    <button class="btn" id="resetBtn">Reset Filters</button>
+    <button class="btn primary" id="enableAllBtn">Enable All Sites</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
